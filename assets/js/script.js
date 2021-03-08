@@ -13,32 +13,6 @@ const timeBlocks = [
     { time: "5pm", event: "" },
 ];
 
-    for (i = 0; i < timeBlocks.length; i++) {
-        var calendarTime = timeBlocks[i].time.replace("pm", "").replace("am", "");
-
-        if (calendarTime < 7) {
-            calendarTime = parseInt(calendarTime);
-            calendarTime += 12;
-        }
-
-        console.log("Calendar Time:" + calendarTime);
-    }
-    const colorRow = function(time) {
-        let currentHour = moment().format("H");
-        console.log("current Hour:" + currentHour);
-
-        if (currentHour === time) {
-            return "present";
-        }
-        if (currentHour > time) {
-            return "past";
-        }
-        if (currentHour < time) {
-            return "future";
-        }
-    }
-
-var timeIndicator = colorRow(calendarTime);
 
 
 const showCurrentDay = function() {
@@ -49,6 +23,32 @@ const showCurrentDay = function() {
 
 timeBlocks.forEach(function(timeBlock, index) {
     let time = timeBlock.time;
+    var colorRow = function() {
+        let currentHour = moment().hours();
+        console.log("current Hour:" + currentHour);
+
+        for (i = 0; i < timeBlocks.length; i++) {
+            var calendarTime = timeBlocks[i].time.replace("pm", "").replace("am", "");
+
+            if (calendarTime < 7) {
+                calendarTime = parseInt(calendarTime);
+                calendarTime += 12;
+            }
+
+            console.log("Calendar Time:" + calendarTime);
+        }
+
+        if (currentHour === calendarTime) {
+            return "present";
+        }
+        if (currentHour > calendarTime) {
+            return "past";
+        }
+        if (currentHour < calendarTime) {
+            return "future";
+        }
+    };
+    let timeIndicator = colorRow();
     let row =
         '<div class="time-block" id="time-block-' +
         (index + 1) +
