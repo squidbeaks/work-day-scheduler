@@ -1,5 +1,6 @@
 const currentDayEl = document.getElementById("currentDay");
 const timeBlockContainer = document.getElementById("time-block-container");
+var events = {};
 
 const timeBlocks = [
     { time: "9am", event: "" },
@@ -13,13 +14,12 @@ const timeBlocks = [
     { time: "5pm", event: "" },
 ];
 
-
+const event = timeBlocks.event;
 
 const showCurrentDay = function() {
     let today = moment().format('dddd, MMMM Do');
     $(currentDayEl).text("Today's date is " + today);
 };
-
 
 timeBlocks.forEach(function(timeBlock, index) {
     let time = timeBlock.time;
@@ -54,7 +54,9 @@ timeBlocks.forEach(function(timeBlock, index) {
         (index + 1) +
         '"><div class="row no-gutters input-group"><div class="col-sm col-lg-1 input-group-prepend hour justify-content-sm-end pr-3 pt-3">' +
         time +
-        '</div><textarea class="form-control ' +
+        '</div><textarea id="description-' +
+        (index + 1) +
+        '" class="form-control description ' +
         timeIndicator +
         '">' +
         timeBlock.event +
@@ -63,10 +65,30 @@ timeBlocks.forEach(function(timeBlock, index) {
     $(".container").append(row);
 });
 
-
-
-
 showCurrentDay();
+
+$(".saveBtn").on("click", function() {
+    // WHEN I click the save button for that time block
+    // THEN the text for that event is saved in local storage
+    const events = document.querySelector(`#description-8`).value;
+    console.log(events);
+
+    localStorage.setItem("events", JSON.stringify(events));
+
+    // var loadTasks = function() {
+    //     tasks = JSON.parse(localStorage.getItem("tasks"));
+      
+    //     // if nothing in localStorage, create a new object to track all task status arrays
+    //     if (!tasks) {
+    //       tasks = {
+    //         toDo: [],
+    //         inProgress: [],
+    //         inReview: [],
+    //         done: []
+    //       };
+    //     }
+    // }
+  });
 
 // GIVEN I am using a daily planner to create a schedule
 // WHEN I view the time blocks for that day
