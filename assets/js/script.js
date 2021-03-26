@@ -54,13 +54,25 @@ function colorRow(time) {
 
 timeBlocks.forEach(function(timeBlock, index) {
     let time = timeBlock.time;
+    let displayedTime;
+
+    if (time > 12) {
+        displayedTime = time - 12;
+        displayedTime += " PM";
+    }
+    else if (time === 12) {
+        displayedTime = time + " PM";
+    }
+    else {
+        displayedTime = time + " AM";
+    };
 
     let timeIndicator = colorRow(time);
     let row =
         '<div class="time-block" id="time-block-' +
         (index + 1) +
         '"><div class="row no-gutters input-group"><div class="col-sm col-lg-1 input-group-prepend hour justify-content-sm-end pr-3 pt-3">' +
-        time +
+        displayedTime +
         '</div><textarea id="description-' +
         (index + 1) +
         '" class="form-control description ' +
