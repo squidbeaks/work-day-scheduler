@@ -1,54 +1,61 @@
 const currentDayEl = document.getElementById("currentDay");
-const timeBlockContainer = document.getElementById("time-block-container");
-var events = {};
+const timeBlockContainer = document.getElementById("container");
+
+let events = [];
 
 const timeBlocks = [
-    { time: "9am", event: "" },
-    { time: "10am", event: "" },
-    { time: "11am", event: "" },
-    { time: "12pm", event: "" },
-    { time: "1pm", event: "" },
-    { time: "2pm", event: "" },
-    { time: "3pm", event: "" },
-    { time: "4pm", event: "" },
-    { time: "5pm", event: "" },
+    { time: 9, event: "" },
+    { time: 10, event: "" },
+    { time: 11, event: "" },
+    { time: 12, event: "" },
+    { time: 13, event: "" },
+    { time: 14, event: "" },
+    { time: 15, event: "" },
+    { time: 16, event: "" },
+    { time: 17, event: "" },
 ];
 
-const event = timeBlocks.event;
+const loadEvents = () => {
+    if (!events) {
+        events = [];
+    }
 
-const showCurrentDay = function() {
+    for (let i = 0; i < timeBlocks.length; i++) {
+        let timeBlockTime = timeBlocks[i].time;
+
+        savedEvent = JSON.parse(localStorage.getItem(timeBlockTime));
+
+        if (savedEvent) {
+            timeBlocks[i].event = savedEvent;
+        }
+    }
+};
+
+loadEvents();
+
+function showCurrentDay() {
     let today = moment().format('dddd, MMMM Do');
     $(currentDayEl).text("Today's date is " + today);
 };
 
+function colorRow(time) {
+    let currentHour = moment().hours();
+
+    if (currentHour === time) {
+        return "present";
+    }
+    if (currentHour > time) {
+        return "past";
+    }
+    if (currentHour < time) {
+        return "future";
+    }
+};
+
 timeBlocks.forEach(function(timeBlock, index) {
     let time = timeBlock.time;
-    var colorRow = function() {
-        let currentHour = moment().hours();
-        console.log("current Hour:" + currentHour);
 
-        for (i = 0; i < timeBlocks.length; i++) {
-            var calendarTime = timeBlocks[i].time.replace("pm", "").replace("am", "");
-
-            if (calendarTime < 7) {
-                calendarTime = parseInt(calendarTime);
-                calendarTime += 12;
-            }
-
-            console.log("Calendar Time:" + calendarTime);
-        }
-
-        if (currentHour === calendarTime) {
-            return "present";
-        }
-        if (currentHour > calendarTime) {
-            return "past";
-        }
-        if (currentHour < calendarTime) {
-            return "future";
-        }
-    };
-    let timeIndicator = colorRow();
+    let timeIndicator = colorRow(time);
     let row =
         '<div class="time-block" id="time-block-' +
         (index + 1) +
@@ -60,42 +67,16 @@ timeBlocks.forEach(function(timeBlock, index) {
         timeIndicator +
         '">' +
         timeBlock.event +
-        '</textarea><div class="col-sm col-lg-1 input-group-append"><button class="saveBtn btn-block" type="submit"><i class="fas fa-save"></i></button></div></div></div>';
+        '</textarea><div class="col-sm col-lg-1 input-group-append"><button class="saveBtn btn-block" id="saveBtn" type="submit" data-time="' + time + '"><i class="fas fa-save"></i></button></div></div></div>';
 
     $(".container").append(row);
 });
 
 showCurrentDay();
 
-$(".saveBtn").on("click", function() {
-    // WHEN I click the save button for that time block
-    // THEN the text for that event is saved in local storage
-    const events = document.querySelector(`#description-8`).value;
-    console.log(events);
+$(".saveBtn").on("click", function(e) {
+    let savedTextArea = e.currentTarget.parentElement.previousElementSibling.value;
+    let savedTime = e.currentTarget.dataset.time;
 
-    localStorage.setItem("events", JSON.stringify(events));
-
-    // var loadTasks = function() {
-    //     tasks = JSON.parse(localStorage.getItem("tasks"));
-      
-    //     // if nothing in localStorage, create a new object to track all task status arrays
-    //     if (!tasks) {
-    //       tasks = {
-    //         toDo: [],
-    //         inProgress: [],
-    //         inReview: [],
-    //         done: []
-    //       };
-    //     }
-    // }
-  });
-
-// GIVEN I am using a daily planner to create a schedule
-// WHEN I view the time blocks for that day
-// THEN each time block is color-coded to indicate whether it is in the past, present, or future
-// WHEN I click into a time block
-// THEN I can enter an event
-// WHEN I click the save button for that time block
-// THEN the text for that event is saved in local storage
-// WHEN I refresh the page
-// THEN the saved events persist
+    localStorage.setItem(savedTime, JSON.stringify(savedTextArea));
+});
